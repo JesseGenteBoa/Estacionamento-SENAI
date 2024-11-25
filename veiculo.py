@@ -1,6 +1,6 @@
 
 class Veiculo:
-    
+
     def __init__(self):
         self.placas_precadastradas = {
         'ABC1D23': ['Moto', 'Honda', '2017', 'Vermelho', 'Gabriel Brito'],
@@ -17,8 +17,8 @@ class Veiculo:
         self.placas_precadastradas[placa] = lista_de_atributos
         
 
-    def imprimir_cadastrados(self):    
-        print(self.placas_precadastradas)
+    def imprimir_cadastrados(self, placa):    
+        print(self.placas_precadastradas[placa])
         #return self.placas_precadastradas[placa]
 
 

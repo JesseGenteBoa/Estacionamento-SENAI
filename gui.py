@@ -420,7 +420,7 @@ def interface_grafica():
     )
 
     entry_image_2 = PhotoImage(
-        file=relative_to_assets("entry_2.png"))
+        file=relative_to_assets("entry_1.png"))
     entry_bg_2 = canvas.create_image(
         1163.5,
         435.5,
@@ -444,7 +444,7 @@ def interface_grafica():
     )
 
     entry_image_3 = PhotoImage(
-        file=relative_to_assets("entry_3.png"))
+        file=relative_to_assets("entry_1.png"))
     entry_bg_3 = canvas.create_image(
         1163.5,
         566.5,
@@ -477,7 +477,7 @@ def interface_grafica():
     )
 
     entry_image_4 = PhotoImage(
-        file=relative_to_assets("entry_4.png"))
+        file=relative_to_assets("entry_1.png"))
     entry_bg_4 = canvas.create_image(
         847.5,
         498.5,
@@ -502,7 +502,7 @@ def interface_grafica():
     )
 
     entry_image_5 = PhotoImage(
-        file=relative_to_assets("entry_5.png"))
+        file=relative_to_assets("entry_1.png"))
     entry_bg_5 = canvas.create_image(
         847.5,
         603.5,

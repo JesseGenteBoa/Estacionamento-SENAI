@@ -27,7 +27,7 @@ def abrir_tela_cadastro(window, dados_queue):
     y = (nova_janela.winfo_screenheight() // 2) - (250 // 2)
     nova_janela.geometry(f"300x250+{x}+{y}")
 
-    campos = ["Tipo", "Marca", "Ano", "Cor", "Dono", "placa"]
+    campos = ["Tipo", "Marca", "Ano", "Cor", "Dono", "Placa"]
     entradas = {}
 
     for i, campo in enumerate(campos):
@@ -53,7 +53,7 @@ def verificar_fila(window, dados_queue):
         dados = dados_queue.get_nowait()
         placa = dados["placa"]
         placa = placa.strip().upper()
-        outros_dados = {campo: valor.strip().capitalize() for campo, valor in dados.items() if campo != "placa"}
+        outros_dados = {campo: valor.strip().capitalize() for campo, valor in dados.items() if campo != "Placa"}
         dados_veiculo = list(outros_dados.values())
         veiculos.cadastrar(placa, dados_veiculo)
     except queue.Empty:

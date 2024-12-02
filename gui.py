@@ -22,7 +22,10 @@ ASSETS_PATH = OUTPUT_PATH / Path(r"Assets")
 def abrir_tela_cadastro(window, dados_queue):
     nova_janela = Toplevel(window)
     nova_janela.title("Cadastro de Veículo")
-    nova_janela.geometry("300x250")
+
+    x = (nova_janela.winfo_screenwidth() // 2) - (300 // 2)
+    y = (nova_janela.winfo_screenheight() // 2) - (250 // 2)
+    nova_janela.geometry(f"300x250+{x}+{y}")
 
     campos = ["Tipo", "Marca", "Ano", "Cor", "Dono", "placa"]
     entradas = {}

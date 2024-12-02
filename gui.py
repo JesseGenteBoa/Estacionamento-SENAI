@@ -44,7 +44,7 @@ def abrir_tela_cadastro(window, dados_queue):
         nova_janela.destroy()
         hotkey("alt", "tab")
             
-    botao_salvar = Button(nova_janela, text="Salvar", command=salvar_dados)
+    botao_salvar = Button(nova_janela, text="Salvar", command=salvar_dados, cursor="hand2")
     botao_salvar.grid(row=len(campos), column=2, columnspan=2, pady=10)
 
 

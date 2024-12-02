@@ -53,9 +53,8 @@ def verificar_fila(window, dados_queue):
         dados = dados_queue.get_nowait()
         placa = dados["placa"]
         placa = placa.strip().upper()
-        outros_dados = {campo: valor.strip().capitalize() for campo, valor in dados.items() if campo != "Placa"}
+        outros_dados = {campo: valor.strip().capitalize() for campo, valor in dados.items() if campo != "placa"}
         dados_veiculo = list(outros_dados.values())
-        dados_veiculo.pop()
         veiculos.cadastrar(placa, dados_veiculo)
     except queue.Empty:
         window.after(500, verificar_fila, window, dados_queue)

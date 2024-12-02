@@ -33,11 +33,13 @@ void setup() {
 void loop() {
   delay(200);
   long distance = us.Ranging(CM); // Medição de distância diretamente da biblioteca
+  
   server.on("/abrir", []() {
     Serial.println("Comando recebido: Abrir cancela");
     abrirCancela();
     server.send(200, "text/plain", "Cancela aberta");
   });
+  
   server.on("/fechar", []() {
     Serial.println("Comando recebido: Fechar cancela");
     unsigned long time = 0;
@@ -49,8 +51,6 @@ void loop() {
       delay(500);
       time += 100;
     }
-
-
     if (distance <= 10) {
       fecharCancela();
       server.send(200, "text/plain", "Cancela fechada");
@@ -59,14 +59,12 @@ void loop() {
     }
   });
 
-
   // Rota para fechar a cancela manualmente
   server.on("/fechar_manualmente", []() {
     Serial.println("Comando recebido: Fechar cancela manualmente");
     fecharCancela();
     server.send(200, "text/plain", "Cancela fechada manualmente.");
   });
-
 
   delay(400); // Tempo para processar a requisição
   server.handleClient(); // Processa requisições HTTP

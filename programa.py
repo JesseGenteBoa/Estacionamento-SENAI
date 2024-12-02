@@ -3,52 +3,60 @@ import easyocr
 import numpy as np
 import veiculo
 import conector
+import queue
 
-conexao = conector.Conector()
 
-veiculos = veiculo.Veiculo()
 
-reader = easyocr.Reader(['pt', 'en']) 
+def controlar_cancela(veiculo_verificado_queue, veiculos):
+    conexao = conector.Conector()
 
-cap = cv2.VideoCapture(0)
+    reader = easyocr.Reader(['pt', 'en']) 
 
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
+    nome_janela = "Webcam"
+    cap = cv2.VideoCapture(0)
+    cv2.namedWindow(nome_janela)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 500)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 400)
+    cv2.moveWindow(nome_janela, 30, 280)
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-    _, binary = cv2.threshold(blurred, 150, 255, cv2.THRESH_BINARY_INV)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    result = reader.readtext(binary)
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        _, binary = cv2.threshold(blurred, 150, 255, cv2.THRESH_BINARY_INV)
 
-    detected_texts = [] 
+        result = reader.readtext(binary)
 
-    for detection in result:
-        coordinates, text, confidence = detection
-        detected_texts.append(text) 
+        detected_texts = [] 
 
-        (top_left, top_right, bottom_right, bottom_left) = coordinates
-        cv2.polylines(frame, [np.array([top_left, top_right, bottom_right, bottom_left], dtype=np.int32)], isClosed=True, color=(0, 255, 0), thickness=2)
-        cv2.putText(frame, text, (int(top_left[0]), int(top_left[1]) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        for detection in result:
+            coordinates, text, confidence = detection
+            detected_texts.append(text) 
 
-    if detected_texts:
-        print("Textos detectados:", detected_texts)
-        if len(detected_texts) > 1:
-            detected_texts = ''.join(detected_texts).upper()
-        else:
-            detected_texts = detected_texts[0]
+            (top_left, top_right, bottom_right, bottom_left) = coordinates
+            cv2.polylines(frame, [np.array([top_left, top_right, bottom_right, bottom_left], dtype=np.int32)], isClosed=True, color=(0, 255, 0), thickness=2)
+            cv2.putText(frame, text, (int(top_left[0]), int(top_left[1]) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
 
-        if veiculos.verificar_cadastrados(detected_texts):
-            conexao.abrir_cancela()
-            conexao.fechar_cancela()
+        if detected_texts:
+            if len(detected_texts) > 1:
+                detected_texts = ''.join(detected_texts).upper()
+            else:
+                detected_texts = detected_texts[0]
 
-    cv2.imshow('Texto Detectado', frame)
+            if veiculos.verificar_cadastrados(detected_texts):
+                #conexao.abrir_cancela()
+                #conexao.fechar_cancela()
+                veiculo_verificado_queue.put(veiculos.verificar_cadastrados(detected_texts))
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
 
-cap.release()
-cv2.destroyAllWindows()
+        cv2.imshow(nome_janela, frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()

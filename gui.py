@@ -51,7 +51,7 @@ def abrir_tela_cadastro(window, dados_queue):
 def verificar_fila(window, dados_queue):
     try:
         dados = dados_queue.get_nowait()
-        placa = dados["placa"]
+        placa = dados["Placa"]
         placa = placa.strip().upper()
         outros_dados = {campo: valor.strip().capitalize() for campo, valor in dados.items() if campo != "Placa"}
         dados_veiculo = list(outros_dados.values())

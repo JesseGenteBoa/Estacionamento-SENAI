@@ -1,4 +1,4 @@
-#define ledAzul D3 // Leds para simular o acionamento da cancela.
+#define ledAzul D3
 #define ledAmarelo D4
 #define TRIG_PIN D2  // Pino de disparo (Trig)
 #define ECHO_PIN D1  // Pino de recepção (Echo)
@@ -33,38 +33,42 @@ void setup() {
 void loop() {
   delay(200);
   long distance = us.Ranging(CM); // Medição de distância diretamente da biblioteca
-  
   server.on("/abrir", []() {
     Serial.println("Comando recebido: Abrir cancela");
     abrirCancela();
     server.send(200, "text/plain", "Cancela aberta");
   });
-  
   server.on("/fechar", []() {
     Serial.println("Comando recebido: Fechar cancela");
     unsigned long time = 0;
     long distance = us.Ranging(CM); // Medição inicial da distância
-    while (distance > 10 || time <= 15000) {
+    while (time <= 15000) {
       distance = us.Ranging(CM); // Atualiza a distância a cada iteração
       Serial.print("Distância dentro do loop: ");
       Serial.println(distance);
-      delay(500);
       time += 100;
-    }
-    if (distance <= 10) {
+      delay(100);
+      if (distance <= 10) {
       fecharCancela();
       server.send(200, "text/plain", "Cancela fechada");
-    } else {
+      } else {
       server.send(200, "text/plain", "Distância ainda maior que 10cm, cancela não fechada.");
+      }
     }
+    delay(5000);
+    digitalWrite(ledAmarelo, 0);
   });
+
 
   // Rota para fechar a cancela manualmente
   server.on("/fechar_manualmente", []() {
     Serial.println("Comando recebido: Fechar cancela manualmente");
     fecharCancela();
+    delay(5000);
+    digitalWrite(ledAmarelo, 0);
     server.send(200, "text/plain", "Cancela fechada manualmente.");
   });
+
 
   delay(400); // Tempo para processar a requisição
   server.handleClient(); // Processa requisições HTTP
@@ -72,18 +76,15 @@ void loop() {
 
 
 void abrirCancela() {
-  digitalWrite(ledAzul, HIGH);
+  digitalWrite(ledAzul, 1);
   delay(500);
   Serial.println("Abertura da cancela...");
 }
 
 
 void fecharCancela() {
-  digitalWrite(ledAzul, LOW);
-  digitalWrite(ledAmarelo, HIGH);
-  delay(5000);
-  digitalWrite(ledAmarelo, LOW);
+  digitalWrite(ledAzul, 0);
+  digitalWrite(ledAmarelo, 1);
   Serial.println("Fechamento da cancela...");
 }
-
 
